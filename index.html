@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
 <title>ระบบป้องกันการบาดเจ็บจากเข็มทิ่ม — โรงพยาบาลชลบุรี</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -31,6 +32,11 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+:root { color-scheme: light; }
+html, body, input, select, textarea, button {
+  -webkit-color-scheme: light;
+  color-scheme: light;
+}
 
 body {
   font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
@@ -2106,12 +2112,14 @@ function postToSheet(payload, screenId, btnId) {
   const formData = new FormData();
   formData.append('data', JSON.stringify(payload));
 
+  // Use no-cors to bypass CORS preflight from GitHub Pages
   fetch(SCRIPT_URL, {
     method: 'POST',
-    body: formData          // FormData ไม่ trigger preflight, Apps Script รับได้
+    mode: 'no-cors',
+    body: formData
   })
-  .then(res => res.text().catch(() => 'ok'))
-  .then(text => {
+  .then(() => {
+    // no-cors returns opaque response — assume success
     const msgs = {
       'screen-incident': 'บันทึกลง "Incident Log" เรียบร้อยแล้ว ✅',
       'screen-env':      'บันทึกลง "Environment Assess" เรียบร้อยแล้ว ✅',
